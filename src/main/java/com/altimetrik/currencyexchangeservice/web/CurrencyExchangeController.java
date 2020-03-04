@@ -1,5 +1,7 @@
 package com.altimetrik.currencyexchangeservice.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,8 @@ import com.altimetrik.currencyexchangeservice.repository.ExchangeValueRepository
 @RestController
 public class CurrencyExchangeController {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private Environment environment;
 
@@ -20,6 +24,7 @@ public class CurrencyExchangeController {
 
     @GetMapping("/currency-exchange/from/{from}/to/{to}")
     public ExchangeValue getExchangeValue(@PathVariable String from, @PathVariable String to) {
+        logger.info("getting the exchange from {} to {}", from, to);
         ExchangeValue ex = repository.findByFromAndTo(from, to);
         ex.setPort(Integer.parseInt(environment.getProperty("local.server.port", "8000")));
         return ex;
